@@ -1311,16 +1311,15 @@ public class WorkingMessage {
                     recipientsInUI + "\" differ from recipients from conv: \"" +
                     semiSepRecipients + "\"";
 
-            // Just interrupt the process of sending message if recipient mismatch
             LogTag.warnPossibleRecipientMismatch(msg, mActivity);
-        }else {
-            // just do a regular send. We're already on a non-ui thread so no need to fire
-            // off another thread to do this work.
-            sendSmsWorker(msgText, semiSepRecipients, threadId);
-
-            // Be paranoid and clean any draft SMS up.
-            deleteDraftSmsMessage(threadId);
         }
+
+        // just do a regular send. We're already on a non-ui thread so no need to fire
+        // off another thread to do this work.
+        sendSmsWorker(msgText, semiSepRecipients, threadId);
+
+        // Be paranoid and clean any draft SMS up.
+        deleteDraftSmsMessage(threadId);
     }
 
     private void sendSmsWorker(String msgText, String semiSepRecipients, long threadId) {
@@ -1583,9 +1582,6 @@ public class WorkingMessage {
             slideshow.sync(pb);
             return res;
         } catch (MmsException e) {
-            return null;
-        } catch (IllegalStateException e) {
-            Log.e(TAG,"failed to create draft mms "+ e);
             return null;
         }
     }
